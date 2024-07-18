@@ -37,17 +37,39 @@ class _HomeState extends State<Home> {
             padding: EdgeInsets.fromLTRB(17, 1.0, 7, 1),
             child: Row(
               children: [
-                Expanded(child:TextField(
+                Expanded(
+                    child: TextField(
                   decoration: InputDecoration(
                       labelText: "Nova Tarefa",
                       labelStyle: TextStyle(color: Colors.blueAccent)),
                 )),
                 ElevatedButton(
-                  onPressed: (){},
+                  onPressed: () {},
                   child: Text("ADD"),
                 )
               ],
             ),
+          ),
+          Expanded(
+            child: ListView.builder(
+                padding: EdgeInsets.only(top: 10.0),
+                itemCount: _toDoList.length,
+                itemBuilder: (context, index) {
+                  return CheckboxListTile(
+                    title: Text(_toDoList[index]["Title"]),
+                    value: _toDoList[index]["ok"],
+                    secondary: CircleAvatar(
+                      child: Icon(
+                          _toDoList[index]["ok"] ? Icons.check : Icons.error),
+                    ),
+                    onChanged: (bool? value) {
+                      setState(() {
+                        _toDoList[index]["ok"] =
+                            value; // Atualiza o valor na lista quando o usuário interage
+                      });
+                    },
+                  );
+                }),
           )
         ],
       ),
