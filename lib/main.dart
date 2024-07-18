@@ -22,18 +22,27 @@ class _HomeState extends State<Home> {
 
   final _toDoController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
 
-  void _addToDo(){
-   setState(() {
-     Map<String,dynamic> newToDo = Map();
-     newToDo["title"] = _toDoController.text;
-     _toDoController.text = "";
-     newToDo["ok"] = false;
-     _toDoList.add(newToDo);
-   });
+    _readData().then((data) {
+      setState(() {
+        _toDoList = json.decode(data!);
+      });
+    });
   }
 
-
+  void _addToDo() {
+    setState(() {
+      Map<String, dynamic> newToDo = Map();
+      newToDo["title"] = _toDoController.text;
+      _toDoController.text = "";
+      newToDo["ok"] = false;
+      _toDoList.add(newToDo);
+      _saveData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +63,15 @@ class _HomeState extends State<Home> {
               children: [
                 Expanded(
                     child: TextField(
-                      controller: _toDoController,
-                      decoration: InputDecoration(
+                  controller: _toDoController,
+                  decoration: InputDecoration(
                       labelText: "Nova Tarefa",
                       labelStyle: TextStyle(color: Colors.blueAccent)),
                 )),
                 ElevatedButton(
-                  onPressed: () {_addToDo();},
+                  onPressed: () {
+                    _addToDo();
+                  },
                   child: Text("ADD"),
                 )
               ],
@@ -80,7 +91,9 @@ class _HomeState extends State<Home> {
                     ),
                     onChanged: (bool? isChecked) {
                       setState(() {
-                        _toDoList[index]["ok"] = isChecked; // Atualiza o valor na lista quando o usuário interage
+                        _toDoList[index]["ok"] =
+                            isChecked; // Atualiza o valor na lista quando o usuário interage
+                        _saveData();
                       });
                     },
                   );
