@@ -63,11 +63,11 @@ class _HomeState extends State<Home> {
               children: [
                 Expanded(
                     child: TextField(
-                  controller: _toDoController,
-                  decoration: InputDecoration(
-                      labelText: "Nova Tarefa",
-                      labelStyle: TextStyle(color: Colors.blueAccent)),
-                )),
+                      controller: _toDoController,
+                      decoration: InputDecoration(
+                          labelText: "Nova Tarefa",
+                          labelStyle: TextStyle(color: Colors.blueAccent)),
+                    )),
                 ElevatedButton(
                   onPressed: () {
                     _addToDo();
@@ -79,30 +79,61 @@ class _HomeState extends State<Home> {
           ),
           Expanded(
             child: ListView.builder(
-                padding: EdgeInsets.only(top: 10.0),
-                itemCount: _toDoList.length,
-                itemBuilder: (context, index) {
-                  return CheckboxListTile(
-                    title: Text(_toDoList[index]["title"]),
-                    value: _toDoList[index]["ok"],
-                    secondary: CircleAvatar(
-                      child: Icon(
-                          _toDoList[index]["ok"] ? Icons.check : Icons.error),
-                    ),
-                    onChanged: (bool? isChecked) {
-                      setState(() {
-                        _toDoList[index]["ok"] =
-                            isChecked; // Atualiza o valor na lista quando o usuário interage
-                        _saveData();
-                      });
-                    },
-                  );
-                }),
+              padding: EdgeInsets.only(top: 10.0),
+              itemCount: _toDoList.length,
+              itemBuilder: buildItem,
+            ),
           )
         ],
       ),
     );
   }
+
+  Widget buildItem(context, index) {
+    return Dismissible(
+      key: Key(DateTime.now().millisecond.toString()),
+      background: Container(
+        color: Colors.red,
+        child: Align(
+          alignment: Alignment(-0.9, 0.0),
+          child: Icon(Icons.delete, color: Colors.white,
+          ),
+        ),
+      ),
+      direction: DismissDirection.startToEnd,
+      child: CheckboxListTile(
+      title: Text(_toDoList[index]["title"]),
+      value: _toDoList[index]["ok"],
+      secondary: CircleAvatar(
+        child: Icon(
+            _toDoList[index]["ok"] ? Icons.check : Icons.error),
+      ),
+      onChanged: (bool? isChecked) {
+        setState(() {
+          _toDoList[index]["ok"] =
+              isChecked; // Atualiza o valor na lista quando o usuário interage
+          _saveData();
+        });
+      },
+    ),
+    );
+  }
+
+  // CheckboxListTile(
+  // title: Text(_toDoList[index]["title"]),
+  // value: _toDoList[index]["ok"],
+  // secondary: CircleAvatar(
+  // child: Icon(
+  // _toDoList[index]["ok"] ? Icons.check : Icons.error),
+  // ),
+  // onChanged: (bool? isChecked) {
+  // setState(() {
+  // _toDoList[index]["ok"] =
+  // isChecked; // Atualiza o valor na lista quando o usuário interage
+  // _saveData();
+  // });
+  // },
+  // );
 
   Future<File> _getFile() async {
     final directory = await getApplicationDocumentsDirectory();
